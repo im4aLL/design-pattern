@@ -8,7 +8,15 @@ class Event {
 
     public static function trigger($name, $argument = null) {
         foreach (self::$events[$name] as $event => $callback) {
-            $argument ? call_user_func_array($callback, $argument) : call_user_func($callback);
+            if($argument && is_array($argument)) {
+                call_user_func_array($callback, $argument);
+            }
+            elseif ($argument && !is_array($argument)) {
+                call_user_func($callback, $argument);
+            }
+            else {
+                call_user_func($callback);
+            }
         }
     }
 }
@@ -21,15 +29,44 @@ class User {
     public function logout() {
         return true;
     }
+
+    public function updated() {
+        return true;
+    }
 }
 
+// Usage
+// ==================================
+
 Event::listen('login', function(){
-    echo 'Event user login fired!';
+    echo 'Event user login fired! <br>';
 });
 
 $user = new User();
 
-$user->login();
 if($user->login()) {
     Event::trigger('login');
+}
+
+// Usage with param
+// ==================================
+
+Event::listen('logout', function($param){
+    echo 'Event '. $param .' logout fired! <br>';
+});
+
+if($user->logout()) {
+    Event::trigger('logout', 'user');
+}
+
+
+// Usage with param as array
+// ==================================
+
+Event::listen('updated', function($param1, $param2){
+    echo 'Event ('. $param1 .', '. $param2 .') updated fired! <br>';
+});
+
+if($user->updated()) {
+    Event::trigger('updated', ['param1', 'param2']);
 }
