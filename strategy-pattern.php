@@ -51,3 +51,34 @@ class MailService {
 
 $mailer = new MailService(new SMTPService());
 $mailer->to('me@habibhadi.com')->message('Hi this is mail text')->send();
+
+
+interface Ability {
+    public function define();
+}
+
+class FlyAbility implements Ability {
+
+    public function define()
+    {
+        var_dump('Fly ability');
+    }
+}
+
+class WalkAbility implements Ability {
+
+    public function define()
+    {
+        var_dump('Walk ability');
+    }
+}
+
+class Duck {
+
+    public function __construct(Ability $ability)
+    {
+
+    }
+
+}
+
