@@ -53,32 +53,53 @@ $mailer = new MailService(new SMTPService());
 $mailer->to('me@habibhadi.com')->message('Hi this is mail text')->send();
 
 
+echo 'Another example <br>======================================================<br>';
+
 interface Ability {
-    public function define();
+    public function perform();
 }
 
 class FlyAbility implements Ability {
 
-    public function define()
+    public function perform()
     {
-        var_dump('Fly ability');
+        print_r('Fly ability <br>');
     }
 }
 
 class WalkAbility implements Ability {
 
-    public function define()
+    public function perform()
     {
-        var_dump('Walk ability');
+        print_r('Walk ability <br>');
     }
 }
 
 class Duck {
+    protected $ability;
 
-    public function __construct(Ability $ability)
+    public function addAbility(Ability $ability)
     {
+        $this->ability[] = $ability;
 
+        return $this;
     }
 
+
+    public function showAbilities()
+    {
+        foreach($this->ability as $ability) {
+            $ability->perform();
+        }
+    }
 }
 
+
+$normalDuck = new Duck();
+$normalDuck->addAbility(new FlyAbility())
+    ->addAbility(new WalkAbility())
+    ->showAbilities();
+
+$flyingDuck = new Duck();
+$flyingDuck->addAbility(new FlyAbility())
+    ->showAbilities();
